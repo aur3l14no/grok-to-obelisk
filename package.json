@@ -1,0 +1,16 @@
+{
+  "name": "grok-to-obelisk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Write Grok chats and bots as Obelisk import snapshots, read through OpenCLI",
+  "bin": {
+    "grok-to-obelisk": "./grok-to-obelisk.mjs"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
