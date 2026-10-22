@@ -28,13 +28,13 @@ export function chatSnapshot(chat, rows) {
         .filter((row) => (row.role === 'user' || row.role === 'assistant') && hasText(row.text))
         .map((row) => toMessage(row, row.model))
         .sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
-    return toSnapshot(`chat:${chat.id}`, chat.title, chat.createdAt, chat.updatedAt, messages);
+    return toSnapshot(`chat-${chat.id}`, chat.title, chat.createdAt, chat.updatedAt, messages);
 }
 
 /** A bot's user messages and text replies, in transcript order. Widgets, approvals, events and attachments are left out. */
 export function botSnapshot(bot, rows) {
     const messages = rows.filter(isBotChatEntry).map((row) => toMessage(row));
-    return toSnapshot(`bot:${bot.id}`, bot.name, bot.createdAt, botUpdatedAt(bot), messages);
+    return toSnapshot(`bot-${bot.id}`, bot.name, bot.createdAt, botUpdatedAt(bot), messages);
 }
 
 function isBotChatEntry(row) {
@@ -108,9 +108,11 @@ export async function sync({ out, bin = 'opencli', full = false, log = console.e
 
 async function syncOne({ out, bin, full, surface, item }) {
     if (typeof item.id !== 'string' || !SAFE_ID.test(item.id)) throw new Error('unexpected id');
-    const file = join(out, 'conversations', `${surface.kind}-${item.id}.json`);
+    // The import format names each snapshot file after its conversation id.
+    const id = `${surface.kind}-${item.id}`;
+    const file = join(out, 'conversations', `${id}.json`);
     const previous = await readJson(file);
-    if (!full && previous?.formatVersion === FORMAT_VERSION
+    if (!full && previous?.formatVersion === FORMAT_VERSION && previous.id === id
         && Date.parse(previous.updatedAt) === Date.parse(surface.updatedAt(item))) {
         return 'not modified';
     }

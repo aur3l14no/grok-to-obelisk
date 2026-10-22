@@ -33,13 +33,13 @@ starts it.
   conversations/bot-<agentId>.json
 ```
 
-Each conversation file is a whole snapshot, replaced through a temporary file
-and a rename:
+Each conversation file is a whole snapshot named after its conversation id,
+replaced through a temporary file and a rename:
 
 ```json
 {
   "formatVersion": 1,
-  "id": "chat:<conversationId>",
+  "id": "chat-<conversationId>",
   "title": "…",
   "createdAt": "2026-10-04T11:34:10.736Z",
   "updatedAt": "2026-10-04T11:39:07.227Z",

@@ -31,7 +31,7 @@ describe('chatSnapshot', () => {
         ];
         assert.deepEqual(chatSnapshot(chat, rows), {
             formatVersion: 1,
-            id: 'chat:c1',
+            id: 'chat-c1',
             title: 'Trip',
             createdAt: '2026-10-01T00:00:00.000Z',
             updatedAt: '2026-10-02T00:00:00.000Z',
@@ -64,7 +64,7 @@ describe('botSnapshot', () => {
         ];
         assert.deepEqual(botSnapshot(bot, rows), {
             formatVersion: 1,
-            id: 'bot:b1',
+            id: 'bot-b1',
             title: 'Trip Planner',
             createdAt: '2026-10-01T00:00:00.000Z',
             updatedAt: '2026-10-03T00:00:00.000Z',
@@ -131,7 +131,16 @@ describe('sync', () => {
         await run();
         await fixtures({ 'grok conversations': ok([]), 'grok bots': ok([]) });
         assert.equal(await run(), 0);
-        assert.equal((await snapshot('chat-c1.json')).id, 'chat:c1');
+        assert.equal((await snapshot('chat-c1.json')).id, 'chat-c1');
+    });
+
+    test('rewrites a snapshot whose id does not match its file name', async () => {
+        await fixtures({ 'grok conversations': ok([chat]), 'grok transcript c1': ok([chatTurn]), 'grok bots': ok([]) });
+        await run();
+        const file = join(out, 'conversations', 'chat-c1.json');
+        await writeFile(file, JSON.stringify({ ...(await snapshot('chat-c1.json')), id: 'chat:c1' }));
+        await run();
+        assert.equal((await snapshot('chat-c1.json')).id, 'chat-c1');
     });
 
     test('counts each failure and still writes the other conversations', async () => {
