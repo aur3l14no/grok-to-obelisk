@@ -5,12 +5,15 @@ directory, so Obelisk can search it next to your coding-agent sessions.
 
 Grok is read through [OpenCLI](https://github.com/jackwener/OpenCLI)'s `grok`
 commands in your signed-in Chrome. This script keeps only the chat content and
-writes Obelisk import format v1 (Obelisk ADR-0018).
+writes Obelisk import format v1, proposed in
+[Obelisk ADR-0018](https://github.com/aur3l14no/obelisk/blob/feat/imported-sources/docs/adr/0018-imported-chat-sources.md).
 
 ## Use
 
 Needs Node 20+ and an `opencli` that has `grok conversations`, `grok transcript`,
-`grok bots` and `grok bot-transcript`, signed in to grok.com.
+`grok bots` and `grok bot-transcript`, signed in to grok.com. Until
+[OpenCLI#2704](https://github.com/jackwener/OpenCLI/pull/2704) is released, build
+its branch and point `OPENCLI_BIN` at `dist/src/main.js`.
 
 ```sh
 ./grok-to-obelisk.mjs            # writes ~/.obelisk/imports/grok
